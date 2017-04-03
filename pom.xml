@@ -10,6 +10,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.build.finalname>hw1</project.build.finalname>
     </properties>
 
     <build>
@@ -24,13 +25,62 @@
                 </configuration>
             </plugin>
             <plugin>
+                <groupId>com.github.wvengen</groupId>
+                <artifactId>proguard-maven-plugin</artifactId>
+                <version>2.0.14</version>
+                <configuration>
+                    <proguardVersion>5.3.3</proguardVersion>
+                    <obfuscate>true</obfuscate>
+                    <!--
+                    classes означает, что мы обработаем все *.class, а jar сформируется
+                    потом на их основе плагином maven-assembly-plugin
+                    -->
+                    <injar>classes</injar>
+                    <options>
+                        <!--
+                        dontusemixedcaseclassnames - не формировать case-sensitive имена классов,
+                        поскольку на Windows файлы AA.class и aa.class могут затирать друг друга
+                        -->
+                        <option>-dontusemixedcaseclassnames</option>
+                        <!--
+                        allowaccessmodification - разрешаем менять private на public при оптимизации
+                        по производительности. Допустимо, т.к. у нас не библиотека
+                        -->
+                        <option>-allowaccessmodification</option>
+                        <!--
+                        Точку входа не будем обфусцировать
+                        -->
+                        <option>-keep public class ru.vinyarsky.hw1.Main { *; }</option>
+                    </options>
+                    <libs>
+                        <lib>${java.home}/lib/rt.jar</lib>
+                        <lib>${java.home}/lib/jsse.jar</lib>
+                    </libs>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>process-classes</phase>
+                        <goals>
+                            <goal>proguard</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <dependencies>
+                    <dependency>
+                        <groupId>net.sf.proguard</groupId>
+                        <artifactId>proguard-base</artifactId>
+                        <version>5.3.3</version>
+                        <scope>runtime</scope>
+                    </dependency>
+                </dependencies>
+            </plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <configuration>
                     <descriptorRefs>
                         <descriptorRef>jar-with-dependencies</descriptorRef>
                     </descriptorRefs>
-                    <finalName>hw1</finalName>
                     <appendAssemblyId>false</appendAssemblyId>
                     <archive>
                         <manifest>
