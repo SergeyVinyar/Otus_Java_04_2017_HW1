@@ -1,9 +1,8 @@
-# Otus_Java_04_2017_HW1
+# Примеры для курса "Разработчик Java" в Otus.ru
 
+Группа 2017-04
 
-This repository contains homework 1 for Otus.ru online-course on Java Development (in russian).
+### Автор
+Sergey Vinyarsky (Сергей Винярский)
 
-The following information is required by course staff:
-
-Sergey Vinyarsky
-Сергей Винярский
+sergey@vinyarsky.ru
