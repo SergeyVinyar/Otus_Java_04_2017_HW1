@@ -197,7 +197,7 @@ public class MyHashMap<K, V> implements Map<K, V> {
 
     /**
      * Перехеширование, если требуется
-     * @param entriesExpectedCount Количество записей, которые предполагается добавить (+) или удалить (-)
+     * @param entriesExpectedCount Количество записей, которые предполагается добавить
      */
     @SuppressWarnings("unchecked")
     private void rehashIfRequired(int entriesExpectedCount) {
