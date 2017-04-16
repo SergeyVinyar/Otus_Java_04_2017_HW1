@@ -17,11 +17,6 @@ public class MyHashMap<K, V> implements Map<K, V> {
      */
     private static final int INITIAL_CAPACITY = 16;
 
-    /**
-     * Количество элементов по умолчанию, добавляемых/удаляемых при перехешировании
-     */
-    private static final int CAPACITY_INCREMENT = 16;
-
     private MyEntry<K, V>[] buckets;
     private Float loadFactor = INITIAL_LOADFACTOR;
 
@@ -85,20 +80,7 @@ public class MyHashMap<K, V> implements Map<K, V> {
         }
 
         rehashIfRequired(1);
-
-        int bucketIndex = key.hashCode() / this.buckets.length;
-
-        MyEntry<K, V> entry = this.buckets[bucketIndex];
-        while(entry != null && entry.next != null)
-            entry = entry.next;
-
-        MyEntry<K, V> newEntry = new MyEntry<>(key, value);
-        if (entry != null)
-            entry.next = newEntry;
-        else
-            this.buckets[bucketIndex] = newEntry;
-
-        this.aSize++;
+        putEntry(new MyEntry<>(key, value));
 
         return null;
     }
@@ -106,7 +88,7 @@ public class MyHashMap<K, V> implements Map<K, V> {
     public V remove(Object key) {
         MyEntry<K, V> prevEntry = null;
 
-        int bucketIndex = key.hashCode() / this.buckets.length;
+        int bucketIndex = key.hashCode() % this.buckets.length;
 
         MyEntry<K, V> entry = this.buckets[bucketIndex];
         while (entry != null) {
@@ -132,7 +114,8 @@ public class MyHashMap<K, V> implements Map<K, V> {
 
         this.aSize--;
 
-        rehashIfRequired(0);
+        // Отключено, т.к. у меня перехеширование работает только на увеличение количества бакетов
+        // rehashIfRequired(0);
 
         return entry.getValue();
     }
@@ -197,37 +180,41 @@ public class MyHashMap<K, V> implements Map<K, V> {
         return null;
     }
 
+    private void putEntry(MyEntry<K, V> newEntry) {
+        int bucketIndex = newEntry.getKey().hashCode() % this.buckets.length;
+
+        MyEntry<K, V> entry = this.buckets[bucketIndex];
+        while(entry != null && entry.next != null)
+            entry = entry.next;
+
+        if (entry != null)
+            entry.next = newEntry;
+        else
+            this.buckets[bucketIndex] = newEntry;
+
+        this.aSize++;
+    }
+
     /**
      * Перехеширование, если требуется
      * @param entriesExpectedCount Количество записей, которые предполагается добавить (+) или удалить (-)
      */
     @SuppressWarnings("unchecked")
     private void rehashIfRequired(int entriesExpectedCount) {
-        int requiredLength = size() + entriesExpectedCount;
-        // + запас
-        requiredLength += requiredLength * (1 - this.loadFactor);
+        int entriesCount = size() + entriesExpectedCount;
 
-        int blocksRequired = (requiredLength - this.buckets.length) / CAPACITY_INCREMENT;
-
-        // При blocksRequired < 0 можно оставить незадействованные бакеты,
-        // а при blocksRequired > 0 хочется, чтобы всем бакетов хватило.
-        if (blocksRequired > 0)
-            blocksRequired++;
-
-        if (blocksRequired == 0)
+        if (entriesCount <= this.buckets.length * this.loadFactor)
             return;
 
-        Set<Entry<K, V>> set = entrySet();
+        Set<Entry<K, V>> entries = entrySet();
+        this.buckets = (MyEntry<K, V>[]) new MyEntry[this.buckets.length * 2];
 
-        int newBucketsLength = size() + 16 * blocksRequired;
-        this.buckets = (MyEntry<K, V>[]) new MyEntry[newBucketsLength];
-
-        // К сожалению, даже после перехеширования никто не гарантирует, что не будут образовываться списки,
-        // поскольку могут быть коллизии хешей. Поэтому сделаем через добавление каждой записи заново.
-        // Хотя, теоретически, здесь можно сэкономить на пересоздании экземпляров MyEntry.
         this.aSize = 0;
-        for(Entry<K, V> entry: set)
-            put(entry.getKey(), entry.getValue());
+        for(Entry<K, V> entry: entries) {
+            MyEntry<K, V> myEntry = (MyEntry<K, V>) entry;
+            myEntry.next = null;
+            putEntry(myEntry);
+        }
     }
 
     public class MyEntry<K, V> implements Entry<K, V> {
