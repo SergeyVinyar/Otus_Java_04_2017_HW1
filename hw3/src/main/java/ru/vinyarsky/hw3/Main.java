@@ -6,7 +6,6 @@ package ru.vinyarsky.hw3;
  * Есть тесты.
  *
  * В main реализовано сравнение по производительности со штатным HashMap.
- * Как и следовало ожидать, он порвал мою реализацию как Тузик грелку :)
  */
 
 import java.util.*;
@@ -50,15 +49,15 @@ public class Main {
         long before;
         long after;
 
-        before = System.currentTimeMillis();
+        before = System.nanoTime();
         run.accept(map);
-        after = System.currentTimeMillis();
-        System.out.println("\tHashMap:\t" + (after - before));
+        after = System.nanoTime();
+        System.out.println("\tHashMap:\t" + (after - before) / 1000 + " мкс");
 
-        before = System.currentTimeMillis();
+        before = System.nanoTime();
         run.accept(myMap);
-        after = System.currentTimeMillis();
-        System.out.println("\tMyHashMap:\t" + (after - before));
+        after = System.nanoTime();
+        System.out.println("\tMyHashMap:\t" + (after - before) / 1000 + " мкс");
         System.out.println("----------------------");
         System.out.println();
     }

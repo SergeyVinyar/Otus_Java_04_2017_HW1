@@ -170,13 +170,15 @@ public class MyHashMap<K, V> implements Map<K, V> {
      * @return null, если не найдено
      */
     private MyEntry<K, V> getEntry(Object key) {
-        for (MyEntry<K, V> entry : this.buckets) {
-            while (entry != null) {
-                if (entry.getKey().equals(key))
-                    return entry;
-                entry = entry.next;
-            }
+        int bucketIndex = key.hashCode() % this.buckets.length;
+
+        MyEntry<K, V> entry = this.buckets[bucketIndex];
+        while (entry != null) {
+            if (entry.getKey().equals(key))
+                return entry;
+            entry = entry.next;
         }
+
         return null;
     }
 
