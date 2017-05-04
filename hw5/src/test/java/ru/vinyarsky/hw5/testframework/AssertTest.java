@@ -14,7 +14,7 @@ class AssertTest {
 
     @org.junit.jupiter.api.Test
     void isNull_Fail() {
-        Throwable error = assertThrows(Error.class, () -> Assert.isNull(new Object()));
+        Throwable error = assertThrows(AssertException.class, () -> Assert.isNull(new Object()));
         assertEquals("Object is not null", error.getMessage());
     }
 
@@ -26,13 +26,13 @@ class AssertTest {
 
     @org.junit.jupiter.api.Test
     void isNotNull_Fail() {
-        Throwable error = assertThrows(Error.class, () -> Assert.isNotNull(null));
+        Throwable error = assertThrows(AssertException.class, () -> Assert.isNotNull(null));
         assertEquals("Object is null", error.getMessage());
     }
 
     @org.junit.jupiter.api.Test
     void fail() {
-        Throwable error = assertThrows(Error.class, () -> Assert.fail());
+        Throwable error = assertThrows(AssertException.class, () -> Assert.fail());
         assertEquals("Test failed", error.getMessage());
     }
 
@@ -43,7 +43,7 @@ class AssertTest {
 
     @org.junit.jupiter.api.Test
     void isTrue_Fail() {
-        Throwable error = assertThrows(Error.class, () -> Assert.isTrue(false));
+        Throwable error = assertThrows(AssertException.class, () -> Assert.isTrue(false));
         assertEquals("Value is not true", error.getMessage());
     }
 
@@ -54,7 +54,7 @@ class AssertTest {
 
     @org.junit.jupiter.api.Test
     void isFalse_Fail() {
-        Throwable error = assertThrows(Error.class, () -> Assert.isFalse(true));
+        Throwable error = assertThrows(AssertException.class, () -> Assert.isFalse(true));
         assertEquals("Value is not false", error.getMessage());
     }
 }

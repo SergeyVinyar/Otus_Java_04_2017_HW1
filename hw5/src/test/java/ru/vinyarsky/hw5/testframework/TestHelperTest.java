@@ -1,7 +1,5 @@
 package ru.vinyarsky.hw5.testframework;
 
-import org.junit.platform.commons.util.StringUtils;
-
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.regex.Matcher;
@@ -33,7 +31,6 @@ class TestHelperTest {
 
         int beforeMethod2CallCount = substringContainsCount("beforeMethod2 called", outputLog);
         assertEquals(2, beforeMethod2CallCount, "Неверное количество вызовов метода beforeMethod2");
-
 
         int afterMethod1CallCount = substringContainsCount("afterMethod1 called", outputLog);
         assertEquals(2, afterMethod1CallCount, "Неверное количество вызовов метода afterMethod1");
