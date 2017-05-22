@@ -20,5 +20,10 @@ import common.CurrencyType;
      */
     int addBanknotes(CurrencyType currencyType, int nominal, int banknotesCount);
 
+    /**
+     * Возвращает оставшуюся сумму указанной валюты в кассетах
+     */
+    int getRestSum(CurrencyType currencyType);
+
     Cassette clone();
 }

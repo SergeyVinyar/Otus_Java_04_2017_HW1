@@ -17,6 +17,11 @@ public interface PrivateAtm {
     int addBanknotes(CurrencyType currencyType, int nominal, int banknotesCount);
 
     /**
+     * Возвращает общую сумму заданной валюты в кассетах
+     */
+    int getTotalRestSum(CurrencyType currencyType);
+
+    /**
      * Возращает объект, хранящий слепок текущего состояния АТМ
      */
     State getState();

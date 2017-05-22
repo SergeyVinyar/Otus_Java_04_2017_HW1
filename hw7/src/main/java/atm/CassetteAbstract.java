@@ -41,14 +41,14 @@ public abstract class CassetteAbstract implements Cassette {
         int result = banknotesCount;
 
         if (this.CURRENCY_TYPE.equals(currencyType) && this.NOMINAL == nominal) {
-            int required = CAPACITY - amount;
+            int required = this.CAPACITY - this.amount;
 
             if (required >= banknotesCount) {
-                amount += banknotesCount;
+                this.amount += banknotesCount;
                 result -= banknotesCount;
             }
             else {
-                amount += required;
+                this.amount += required;
                 result -= required;
             }
         }
@@ -60,11 +60,24 @@ public abstract class CassetteAbstract implements Cassette {
     }
 
     @Override
+    public int getRestSum(CurrencyType currencyType) {
+        int result = 0;
+
+        if (this.CURRENCY_TYPE.equals(currencyType))
+            result += this.amount * this.NOMINAL;
+
+        if (this.nextCassette != null)
+            result += this.nextCassette.getRestSum(currencyType);
+
+        return result;
+    }
+
+    @Override
     public Cassette clone() {
         try {
             return (Cassette) super.clone();
         } catch (CloneNotSupportedException e) {
-            return null;
+            return null; // Мы сюда не должны попасть
         }
     }
 }

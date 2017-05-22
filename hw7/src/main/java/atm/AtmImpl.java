@@ -52,6 +52,13 @@ import java.util.stream.Collectors;
     }
 
     @Override
+    public int getTotalRestSum(CurrencyType currencyType) {
+        if (this.cassettes != null && !this.cassettes.isEmpty())
+            return this.cassettes.get(0).getRestSum(currencyType);
+        return 0;
+    }
+
+    @Override
     public State getState() {
         return new StateImpl(this.id, this.cassettes);
     }
