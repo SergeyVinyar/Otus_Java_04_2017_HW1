@@ -121,7 +121,7 @@ public abstract class CassetteAbstract implements Cassette {
 
         // Нам важно равномерно расходовать номиналы, а не кассеты, поэтому возвращаем банкноты соответствующих номиналов
         // из первых попавшихся подходящих кассет
-        doWithdraw(currencyType, sum);
+        doWithdraw(currencyType, sum, nominals);
 
         return true;
     }
@@ -193,17 +193,18 @@ public abstract class CassetteAbstract implements Cassette {
         return new ArrayList<>(); // Сюда мы не должны попасть
     }
 
-    private void doWithdraw(CurrencyType currencyType, int sum) {
-
+    private void doWithdraw(CurrencyType currencyType, int sum, List<Integer> nominals) {
         if (this.CURRENCY_TYPE.equals(currencyType)) {
-            int amount = sum / this.NOMINAL;
-
-            this.amount -= amount;
-            sum -= amount * this.NOMINAL;
+            Integer nominal = this.NOMINAL;
+            while (nominals.contains(nominal) && this.amount > 0 && sum >= this.NOMINAL) {
+                this.amount--;
+                sum -= this.NOMINAL;
+                nominals.remove(nominal);
+            }
         }
 
-        if (this.nextCassette != null) {
-            ((CassetteAbstract) this.nextCassette).doWithdraw(currencyType, sum);
+        if (this.nextCassette != null && !nominals.isEmpty()) {
+            ((CassetteAbstract) this.nextCassette).doWithdraw(currencyType, sum, nominals);
         }
         else {
             assert sum == 0;

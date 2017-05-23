@@ -99,9 +99,9 @@ class AtmImplTest {
 
         Atm.State state = atm.getState();
 
-        atm.addBanknotes(CurrencyType.ROUBLE, 100, 1);
+        atm.addBanknotes(CurrencyType.ROUBLE, 5000, 1);
 
-        assertEquals(initialSum + 100, atm.getTotalRestSum(CurrencyType.ROUBLE));
+        assertEquals(initialSum + 5000, atm.getTotalRestSum(CurrencyType.ROUBLE));
 
         atm.restoreState(state);
 
