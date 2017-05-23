@@ -7,6 +7,7 @@ public interface PublicAtm {
 
     /**
      * Выдача указанной суммы
+     * @return true - выдано успешно
      */
-    void withdraw(int sum) throws Exception;
+    boolean withdraw(CurrencyType currencyType, int sum);
 }

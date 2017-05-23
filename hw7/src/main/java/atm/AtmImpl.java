@@ -33,8 +33,11 @@ import java.util.stream.Collectors;
     }
 
     @Override
-    public void withdraw(int sum) throws Exception {
-        // TODO
+    public boolean withdraw(CurrencyType currencyType, int sum) {
+        if (this.cassettes != null && !this.cassettes.isEmpty())
+            return this.cassettes.get(0).withdraw(currencyType, sum);
+        else
+            return false;
     }
 
     @Override

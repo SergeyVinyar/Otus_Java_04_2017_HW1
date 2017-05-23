@@ -2,6 +2,8 @@ package atm;
 
 import common.CurrencyType;
 
+import java.util.List;
+
 /* package */ interface Cassette extends Cloneable {
 
     /**
@@ -24,6 +26,18 @@ import common.CurrencyType;
      * Возвращает оставшуюся сумму указанной валюты в кассетах
      */
     int getRestSum(CurrencyType currencyType);
+
+    /**
+     * Выдача средств
+     * @param sum Запрашиваемая сумма
+     * @return true - сумма выдана успешно
+     */
+    boolean withdraw(CurrencyType currencyType, int sum);
+
+    /**
+     * Возвращает наименьший список банкнот (номиналов), которыми можно выдать запрашиваемую сумму
+     */
+    List<Integer> getBanknoteNominals(CurrencyType currencyType, int sum);
 
     Cassette clone();
 }
