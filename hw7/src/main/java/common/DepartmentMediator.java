@@ -8,5 +8,5 @@ public interface DepartmentMediator {
     /**
      * Регистрирует АТМ в департаменте
      */
-    void addAtm(PrivateAtm atm);
+    void addAtm(Atm atm);
 }

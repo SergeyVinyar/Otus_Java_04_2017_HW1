@@ -2,13 +2,15 @@ package atm;
 
 import common.CurrencyType;
 import common.DepartmentMediator;
-import common.PrivateAtm;
-import common.PublicAtm;
+import common.Atm;
+import common.PublicAtmAPI;
 
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
-/* package */ class AtmImpl implements PublicAtm, PrivateAtm {
+/* package */ class AtmImpl implements PublicAtmAPI, Atm {
 
     private String id;
     private List<Cassette> cassettes;
@@ -24,12 +26,24 @@ import java.util.stream.Collectors;
     /* package */ void setCassettes(List<Cassette> cassettes) {
         this.cassettes = cassettes;
         Cassette next = null;
-        for (int i = cassettes.size() - 1; i <= 0 ; i--) {
+        for (int i = cassettes.size() - 1; i >= 0 ; i--) {
             Cassette current = cassettes.get(i);
             if (next != null)
                 cassettes.get(i).setNext(next);
             next = current;
         }
+    }
+
+    @Override
+    public PublicAtmAPI getPublicAtmAPI() {
+        return this;
+    }
+
+    @Override
+    public int[] getSupportedNominals(CurrencyType currencyType) {
+        if (this.cassettes != null && !this.cassettes.isEmpty())
+            return Arrays.stream(this.cassettes.get(0).getSupportedNominals(currencyType)).distinct().toArray();
+        return new int[0];
     }
 
     @Override
@@ -76,7 +90,7 @@ import java.util.stream.Collectors;
         }
     }
 
-    private static class StateImpl implements PrivateAtm.State {
+    private static class StateImpl implements Atm.State {
 
         private String id;
         private List<Cassette> cassettes;

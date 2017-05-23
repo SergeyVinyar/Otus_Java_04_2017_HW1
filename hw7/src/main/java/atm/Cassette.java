@@ -7,12 +7,32 @@ import java.util.List;
 /* package */ interface Cassette extends Cloneable {
 
     /**
+     * Возвращает номинал банкнот, на которые настроена кассета
+     */
+    int getNominal();
+
+    /**
+     * Возвращает максимальное количество банкнот, которые можно разместить в кассете
+     */
+    int getCapacity();
+
+    /**
+     * Возвращает тип валюты, на который настроена кассета
+     */
+    CurrencyType getCurrencyType();
+
+    /**
      * Указание слудующей кассеты в chain of responsibility
      */
     void setNext(Cassette cassette);
 
     /**
-     * Возвращает суммарное необходимое количество банкнот указанного номинала
+     * Возвращает список поддерживаемых номиналов банкнот
+     */
+    int[] getSupportedNominals(CurrencyType currencyType);
+
+    /**
+     * Возвращает суммарное необходимое количество банкнот указанного номинала, чтобы заполнить кассету полностью
      */
     int getRequiredAmountOfBanknotes(CurrencyType currencyType, int nominal);
 

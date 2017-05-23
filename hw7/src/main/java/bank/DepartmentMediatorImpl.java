@@ -2,7 +2,7 @@ package bank;
 
 import common.CurrencyType;
 import common.DepartmentMediator;
-import common.PrivateAtm;
+import common.Atm;
 
 import static common.Utils.*;
 
@@ -13,11 +13,11 @@ import java.util.*;
  */
 public class DepartmentMediatorImpl implements DepartmentMediator {
 
-    private Set<PrivateAtm> atmSet = new HashSet<>();
-    private Map<PrivateAtm, PrivateAtm.State> states = new HashMap<>();
+    private Set<Atm> atmSet = new HashSet<>();
+    private Map<Atm, Atm.State> states = new HashMap<>();
 
     @Override
-    public void addAtm(PrivateAtm atm) {
+    public void addAtm(Atm atm) {
         this.atmSet.add(atm);
     }
 
@@ -49,18 +49,12 @@ public class DepartmentMediatorImpl implements DepartmentMediator {
     }
 
     private void refillOneCurrency(CurrencyType currencyType) {
-        // Можно было бы добавить возврат со стороны АТМ списка поддерживаемых номиналов,
-        // но мне уже лень :)
-        refillOneCurrencyAndNominal(currencyType, 10);
-        refillOneCurrencyAndNominal(currencyType, 20);
-        refillOneCurrencyAndNominal(currencyType, 30);
-    }
-
-    private void refillOneCurrencyAndNominal(CurrencyType currencyType, int nominal) {
-        int required = getTotalRequiredAmountOfBanknotes(currencyType, nominal);
-        for (PrivateAtm atm : this.atmSet)
-            required = atm.addBanknotes(currencyType, nominal, required);
-        assert required == 0;
+        for (Atm atm: atmSet) {
+            for (int nominal : atm.getSupportedNominals(currencyType)) {
+                int required = atm.getRequiredAmountOfBanknotes(currencyType, nominal);
+                atm.addBanknotes(currencyType, nominal, required);
+            }
+        }
     }
 
     /**

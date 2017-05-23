@@ -2,6 +2,8 @@ package atm;
 
 import common.CurrencyType;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -22,8 +24,43 @@ public abstract class CassetteAbstract implements Cassette {
     }
 
     @Override
+    public int getNominal() {
+        return this.NOMINAL;
+    }
+
+    @Override
+    public int getCapacity() {
+        return this.CAPACITY;
+    }
+
+    @Override
+    public CurrencyType getCurrencyType() {
+        return this.CURRENCY_TYPE;
+    }
+
+    @Override
     public void setNext(Cassette cassette) {
         this.nextCassette = cassette;
+    }
+
+    @Override
+    public int[] getSupportedNominals(CurrencyType currencyType) {
+        if (this.nextCassette != null) {
+            int[] nominals = this.nextCassette.getSupportedNominals(currencyType);
+            if (this.CURRENCY_TYPE.equals(currencyType)) {
+                nominals = Arrays.copyOf(nominals, nominals.length + 1);
+                nominals[nominals.length - 1] = this.NOMINAL;
+            }
+            return nominals;
+        }
+        else {
+            if (this.CURRENCY_TYPE.equals(currencyType)) {
+                return new int[]{this.NOMINAL};
+            }
+            else {
+                return new int[0];
+            }
+        }
     }
 
     @Override
@@ -91,21 +128,28 @@ public abstract class CassetteAbstract implements Cassette {
 
     @Override
     public List<Integer> getBanknoteNominals(CurrencyType currencyType, int sum) {
-        if (!this.CURRENCY_TYPE.equals(currencyType) || sum < this.NOMINAL) {
+        return doGetBanknoteNominals(currencyType, sum, this.amount);
+    }
+
+    private List<Integer> doGetBanknoteNominals(CurrencyType currencyType, int sum, int currentAmount) {
+        if (!this.CURRENCY_TYPE.equals(currencyType) || sum < this.NOMINAL || currentAmount == 0) {
             if (this.nextCassette != null) {
                 return this.nextCassette.getBanknoteNominals(currencyType, sum);
             }
             else {
-                return Collections.emptyList(); // Не можем выдать запрошенную сумму
+                return new ArrayList<>(); // Не можем выдать запрошенную сумму
             }
         }
 
-        if (sum == this.NOMINAL)
-            return Collections.singletonList(this.NOMINAL); // Одной банкнотой выдадим, меньшим количеством уже никак не получится
+        if (sum == this.NOMINAL) {
+            List<Integer> result = new ArrayList<>(1); // Collections.singletonList не используем, так как он immutable
+            result.add(this.NOMINAL); // Одной банкнотой выдадим, меньшим количеством уже никак не получится
+            return result;
+        }
 
         // Варианты, среди которых мы ищем оптимальный по количеству выдаваемых банкнот:
-        List<Integer> nominals1 = Collections.emptyList();
-        List<Integer> nominals2 = Collections.emptyList();
+        List<Integer> nominals1 = new ArrayList<>(); // Collections.emptyList не используем, так как он immutable
+        List<Integer> nominals2 = new ArrayList<>();
         if (this.nextCassette != null) {
 
             // 1) Мы можем выдать банкноту из данной кассеты и какое-то количество банкнот из других кассет
@@ -117,7 +161,7 @@ public abstract class CassetteAbstract implements Cassette {
         }
 
         // 3) Мы можем выдать несколько банкнот из данной кассеты и какое-то количество банкнот из других кассет
-        List<Integer> nominals3 = getBanknoteNominals(currencyType, sum - NOMINAL);
+        List<Integer> nominals3 = doGetBanknoteNominals(currencyType, sum - NOMINAL, currentAmount - 1);
         nominals3.add(this.NOMINAL);
 
         // Выбираем тот вариант, количество банкнот в котором минимально и при этот составляет запрашиваемую сумму
@@ -137,7 +181,7 @@ public abstract class CassetteAbstract implements Cassette {
         int minSize = Math.min(nominals1Size, Math.min(nominals2Size, nominals3Size));
 
         if (minSize == Integer.MAX_VALUE)
-            return Collections.emptyList(); // Ни одна комбинация не позволит выдать запрашиваемую сумму
+            return new ArrayList<>(); // Ни одна комбинация не позволит выдать запрашиваемую сумму
 
         if (minSize == nominals1Size)
             return nominals1;
@@ -146,7 +190,7 @@ public abstract class CassetteAbstract implements Cassette {
         else if (minSize == nominals3Size)
             return nominals3;
 
-        return Collections.emptyList(); // Сюда мы не должны попасть
+        return new ArrayList<>(); // Сюда мы не должны попасть
     }
 
     private void doWithdraw(CurrencyType currencyType, int sum) {

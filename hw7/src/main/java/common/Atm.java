@@ -3,7 +3,17 @@ package common;
 /**
  * Приватный интерфес АТМ для департамента
  */
-public interface PrivateAtm {
+public interface Atm {
+
+    /**
+     * Возвращает публичный API
+     */
+    PublicAtmAPI getPublicAtmAPI();
+
+    /**
+     * Возвращает список поддерживаемых номиналов банкнот
+     */
+    int[] getSupportedNominals(CurrencyType currencyType);
 
     /**
      * Возвращает потребное количество банкнот соответствующего номинала, чтобы заполнить соответствующие кассеты полностью

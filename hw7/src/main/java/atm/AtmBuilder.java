@@ -1,6 +1,6 @@
 package atm;
 
-import common.PrivateAtm;
+import common.Atm;
 import common.CurrencyType;
 import common.DepartmentMediator;
 
@@ -43,7 +43,7 @@ public class AtmBuilder {
         return this;
     }
 
-    public PrivateAtm build() throws Exception {
+    public Atm build() throws Exception {
         if (this.id == null)
             throw new Exception("Не указан идентификатор ATM");
 
