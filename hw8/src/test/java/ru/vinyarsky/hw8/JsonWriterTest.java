@@ -15,6 +15,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
 
+import java.util.*;
+
 public class JsonWriterTest {
 
     private Gson gson;
@@ -70,6 +72,44 @@ public class JsonWriterTest {
             String expectedString = gson.toJson(data);
             JSONAssert.assertEquals(expectedString, actualString, false);
         }
+    }
+
+    @Test
+    public void collections() throws Exception {
+
+        List<String> list = new ArrayList<>();
+        list.add("One");
+        list.add("Two");
+        list.add("Three");
+
+        Set<String> set = new HashSet<String>();
+        list.add("One");
+        list.add("Two");
+        list.add("Three");
+
+        {
+            String actualString = JsonWriter.AsJson(list);
+            String expectedString = gson.toJson(list);
+            JSONAssert.assertEquals(expectedString, actualString, false);
+        }
+
+        {
+            String actualString = JsonWriter.AsJson(set);
+            String expectedString = gson.toJson(set);
+            JSONAssert.assertEquals(expectedString, actualString, false);
+        }
+    }
+
+    @Test
+    public void map() throws Exception {
+        Map<String, Integer> map = new HashMap<>();
+        map.put("One", 1);
+        map.put("Two", 2);
+        map.put("Three", 3);
+
+        String actualString = JsonWriter.AsJson(map);
+        String expectedString = gson.toJson(map);
+        JSONAssert.assertEquals(expectedString, actualString, false);
     }
 
     @Test
