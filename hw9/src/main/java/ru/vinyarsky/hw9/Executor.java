@@ -1,7 +1,5 @@
 package ru.vinyarsky.hw9;
 
-import javafx.beans.binding.ListBinding;
-
 import javax.persistence.Id;
 import javax.persistence.Transient;
 import java.lang.reflect.Field;
