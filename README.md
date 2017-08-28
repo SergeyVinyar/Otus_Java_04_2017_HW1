@@ -33,7 +33,7 @@ sergey@vinyarsky.ru
 
 **hw8**
 
-Упрощенная имплементация Json (на базе *org.json.simple.\**)
+Упрощенная имплементация Gson (на базе *org.json.simple.\**)
 
 **hw9**
 
