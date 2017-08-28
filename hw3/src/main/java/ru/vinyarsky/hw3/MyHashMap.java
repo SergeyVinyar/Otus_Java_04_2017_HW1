@@ -73,11 +73,8 @@ public class MyHashMap<K, V> implements Map<K, V> {
 
     public V put(K key, V value) {
         MyEntry<K, V> oldEntry = getEntry(key);
-        if (oldEntry != null) {
-            V oldValue = oldEntry.getValue();
-            oldEntry.setValue(value);
-            return oldValue;
-        }
+        if (oldEntry != null)
+            return oldEntry.setValue(value);
 
         rehashIfRequired(1);
         putEntry(new MyEntry<>(key, value));
